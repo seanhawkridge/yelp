@@ -10,12 +10,14 @@
     = restaurant.name
 
     - if restaurant.reviews.any?
+      Average rating:
+      = star_rating(restaurant.average_rating)
+
       %ul
         - restaurant.reviews.each do |review|
           %li
             = review.thoughts
-            %strong= review.rating
-            \/5
+
     - else
       %p No reviews
 

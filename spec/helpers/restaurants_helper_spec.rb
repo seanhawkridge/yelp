@@ -13,3 +13,28 @@ require 'rails_helper'
 # RSpec.describe RestaurantsHelper, type: :helper do
 #   pending "add some examples to (or delete) #{__FILE__}"
 # end
+
+def signup
+  visit '/'
+  click_link('Sign up')
+  fill_in('Email', with: 'test@example.com')
+  fill_in('Password', with: 'testtest')
+  fill_in('Password confirmation', with: 'testtest')
+  click_button('Sign up')
+end
+
+def signup_two
+  visit '/'
+  click_link('Sign up')
+  fill_in('Email', with: 'two@example.com')
+  fill_in('Password', with: 'testtest')
+  fill_in('Password confirmation', with: 'testtest')
+  click_button('Sign up')
+end
+
+def create_restaurant
+  visit '/restaurants'
+  click_link 'Add a restaurant'
+  fill_in 'Name', with: 'Wagamama'
+  click_button 'Create Restaurant'
+end

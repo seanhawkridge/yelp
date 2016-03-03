@@ -1,5 +1,7 @@
 class RestaurantsController < ApplicationController
 
+  before_action :authenticate_user!, :except => [:index, :show]
+
   def index
     @restaurants = Restaurant.all
   end
@@ -17,10 +19,6 @@ class RestaurantsController < ApplicationController
     end
   end
 
-  def restaurant_params
-    params.require(:restaurant).permit(:name)
-  end
-
   def show
     @restaurant = Restaurant.find(params[:id])
   end
@@ -31,16 +29,27 @@ class RestaurantsController < ApplicationController
 
   def update
     @restaurant = Restaurant.find(params[:id])
-    @restaurant.update(restaurant_params)
-
+    if @restaurant.owned_by?(current_user)
+      @restaurant.update(restaurant_params)
+    else
+      flash[:notice] = 'Sorry - you can only edit your own posts'
+    end
     redirect_to '/restaurants'
   end
 
   def destroy
     @restaurant = Restaurant.find(params[:id])
-    @restaurant.destroy
-    flash[:notice] = 'Restaurant deleted successfully'
+    if @restaurant.owned_by?(current_user)
+      @restaurant.destroy
+      flash[:notice] = 'Restaurant deleted successfully'
+    else
+      flash[:notice] = 'Sorry - you can only delete your own posts'
+    end
     redirect_to '/restaurants'
+  end
+
+  def restaurant_params
+    params.require(:restaurant).permit(:name).merge(user: current_user)
   end
 
 end
